@@ -11,6 +11,7 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcryptjs');
 
 const users = require('./routes/users')
+const weatherDataRoute = require('./routes/weatherdata')
 require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
@@ -52,5 +53,6 @@ app.use(cookieParser())
 app.use(passport.initialize())
 
 app.use('/api/v1/users', users)
+app.use('/api/weather',weatherDataRoute)
 
 module.exports = app
