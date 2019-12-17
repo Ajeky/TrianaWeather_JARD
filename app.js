@@ -13,6 +13,7 @@ const User = require('./models/users')
 
 const users = require('./routes/users')
 const weatherDataRoute = require('./routes/weatherdata')
+const estacionesRoute = require('./routes/estaciones')
 require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
@@ -55,7 +56,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(passport.initialize())
 
-app.use('/users', users)
-app.use('/api/weather', weatherDataRoute)
+app.use('/api/users', users)
+app.use('/api/weather',weatherDataRoute)
+app.use('/api/stations', estacionesRoute)
 
 module.exports = app

@@ -1,7 +1,7 @@
 'use strict'
 
 const error_types = {
-    Error400: function(msg) { //bad request
+    Error400: function(msg){ //bad request
         let err = Error.apply(this, [msg]);
         this.name = err.name = "Error400";
         this.message = err.message;
