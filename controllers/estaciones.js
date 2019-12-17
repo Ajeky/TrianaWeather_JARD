@@ -10,8 +10,8 @@ module.exports = {
         let estaciones = new estaciones({
             localizacion: req.body.localizacion,
             nombre: req.body.nombre,
-            usuarioRegistra: req.usuario._id,//Esto es el usuario que esta logueado
-            usuarioMantiene: req.body.idMantenimiento
+           // usuarioRegistra: req.usuario._id,//Esto es el usuario que esta logueado
+            //usuarioMantiene: req.body.idMantenimiento
         });
         estaciones.save()
             .then(resp => resp.populate('usuarioRegistra').execPopulate())
