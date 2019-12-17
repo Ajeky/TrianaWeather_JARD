@@ -16,11 +16,12 @@ module.exports = {
             humedad : req.body.humedad,
             calidad_aire : req.body.calidad_aire,
             presion : req.body.presion,
+            estacion : req.body.estacion,
             fecha : req.body.fecha
         });
 
         weatherData.save()
-            //populate estacion .then(wd => )
+            .then(wd => wd.populate('estacion').execPopulate())
             .then(wd => res.status(201).json(wd))
             .catch(err => res.send(500).json(err.message))
     },
@@ -29,6 +30,7 @@ module.exports = {
         const weatherData_id = req.params.id
         WeatherData.findById(weatherData_id)
             .exec()
+            .then(doc => doc.populate('estacion').execPopulate())
             .then(doc => res.status(200).json(doc))
             .catch(err => res.send(404).json(err.message))
     },
@@ -41,16 +43,25 @@ module.exports = {
         end.setHours(23,59,59,999);
 
         WeatherData.find({fecha:{$gte: start, $lt: end}})
-            .exec()
-            .then(docs => res.status(200).json(docs))
-            .catch(err => res.send(500).json(err.message))
+        .populate('estacion')
+        .exec()
+        .then(docs => res.status(200).json(docs))
+        .catch(err => res.send(500).json(err.message))
     },
-    //Método para traer los WeatherData para un rango determinado de fechas
+    //Método para traer los WeatherData para un rango determinado de fechas(Formato : dd-MM-yyyy)
     getWeatherDataFromTo : (req,res) => {
-        console.log('fromto');
-        console.log(req.params.from);
-        console.log('to');
-        console.log(req.params.to);
+        var from_split = req.params.from.split('-');
+        var to_split = req.params.to.split('-');
+        
+        var from = new Date(parseInt(from_split[2]),parseInt(from_split[1])-1,parseInt(from_split[0]));
+        var to = new Date(parseInt(to_split[2]),parseInt(to_split[1])-1,parseInt(to_split[0]));
+        to.setHours(23,59,59,999);
+        
+        WeatherData.find({fecha:{$gte: from, $lte: to}})
+        .populate('estacion')
+        .exec()
+        .then(docs => res.status(200).json(docs))
+        .catch(err => res.send(500).json(err.message))
     }
 
 }
