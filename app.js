@@ -52,7 +52,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(passport.initialize())
 
-app.use('/api/v1/users', users)
-app.use('/api/weather',weatherDataRoute)
+app.use('/users', users)
+app.use('/api/weather', weatherDataRoute)
 
 module.exports = app

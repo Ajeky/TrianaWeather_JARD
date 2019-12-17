@@ -18,7 +18,7 @@ let controller = {
                     email: req.body.email,
                     nombre_completo: req.body.nombre_completo,
                     rol: req.body.rol,
-                    fecha_creacion: Date.now,
+                    fecha_creacion: new Date(),
                     password: pass,
                     estaciones_registradas: [],
                     estaciones_mantenidas: []
@@ -38,7 +38,7 @@ let controller = {
             else {
                 const payload = {
                     sub: user.id,
-                    exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
+                    exp: Date.now + parseInt(process.env.JWT_LIFETIME),
                     username: user.username
                 };
                 const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
@@ -48,6 +48,7 @@ let controller = {
                 });
             }
         })(req, res)
-    )
+    }
 }
-}
+
+module.exports = controller;
