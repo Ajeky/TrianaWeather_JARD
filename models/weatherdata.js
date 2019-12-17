@@ -10,7 +10,7 @@ const weatherDataSchema = new mongoose.Schema({
     humedad : Number,
     calidad_aire : Number,
     presion : Number,
-    //estacion_meteorologica : {type :mongoose.Schema.Types.ObjectId , ref: 'Estacion'},
+    estacion_meteorologica : {type :mongoose.Schema.Types.ObjectId , ref: 'Estacion'},
     fecha : {type: Date, default: Date.now}
 });
 
