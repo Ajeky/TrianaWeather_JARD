@@ -8,12 +8,9 @@ const estacionesSchema = new mongoose.Schema({
     longitud:{type:Number},
     nombre: {type:String},
     usuarioRegistra:{type: mongoose.Schema.Types.ObjectId,
-                     ref: 'Usuario'                        
-    },
+                     ref: 'Usuario'},
     usuarioMantiene:{type: mongoose.Schema.Types.ObjectId,
-        ref: 'Usuario'                        
-}
-
+        ref: 'Usuario'}
 
 });
 
