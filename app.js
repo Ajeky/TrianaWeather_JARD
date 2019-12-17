@@ -10,6 +10,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcryptjs');
 const User = require('./models/users')
+const middleware = require('./middleware/middleware')
 
 const users = require('./routes/users')
 const weatherDataRoute = require('./routes/weatherdata')
@@ -24,8 +25,7 @@ db.once('open', () => {
     console.log('Conectado!');
 });
 
-passport.use(new LocalStrategy((username, password, done) => {
-    
+passport.use(new LocalStrategy((username, password, done) => {    
     let busqueda = (username.includes('@')) ? { email: username } : { username: username };
     User.findOne(busqueda, (err, user) => {
         if (err) return done(null, false);
@@ -43,6 +43,7 @@ opts.secretOrKey = process.env.JWT_SECRET;
 opts.algorithms = [process.env.JWT_ALGORITHM];
 
 passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
+    
     User.findById(jwt_payload.sub, (err, user) => {
         if (err) return done(null, false);
         else return done(null, user);
@@ -59,5 +60,7 @@ app.use(passport.initialize())
 app.use('/api/users', users)
 app.use('/api/weather',weatherDataRoute)
 app.use('/api/stations', estacionesRoute)
+app.use(middleware.notFoundHandler)
+app.use(middleware.errorHandler)
 
 module.exports = app
