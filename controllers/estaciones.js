@@ -18,5 +18,19 @@ module.exports = {
             .then(resp => resp.populate('usuarioMantiene').execPopulate())
             .then(resp => res.status(201).json(resp))
             .catch(err => res.send(500).json(err.message))
+    },
+    getEstaciones: async(req,res) =>{
+
+        try{
+            let resultado = null
+
+            resultado = await estaciones.find().exec();
+
+            res.status(200).json(resultado);
+
+        }catch{
+            res.send(500, err.message);
+        }//Faltaria meterle la autenticacion de alvaro cuando este
+
     }
 }
