@@ -9,6 +9,7 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcryptjs');
+const User = require('./models/users')
 
 const users = require('./routes/users')
 const weatherDataRoute = require('./routes/weatherdata')
@@ -23,12 +24,14 @@ db.once('open', () => {
 });
 
 passport.use(new LocalStrategy((username, password, done) => {
+    
     let busqueda = (username.includes('@')) ? { email: username } : { username: username };
     User.findOne(busqueda, (err, user) => {
         if (err) return done(null, false);
         if (!bcrypt.compareSync(password, user.password)) {
             return done(null, false);
         }
+        
         return done(null, user);
     });
 }));
