@@ -45,14 +45,12 @@ module.exports = {
             .then(docs => res.status(200).json(docs))
             .catch(err => res.send(500).json(err.message))
     },
+    //Método para traer los WeatherData para un rango determinado de fechas
     getWeatherDataFromTo : (req,res) => {
         console.log('fromto');
         console.log(req.params.from);
         console.log('to');
         console.log(req.params.to);
-        
-        
-        
     }
 
 }
