@@ -27,7 +27,7 @@ module.exports = {
             .catch(err => res.send(500).json(err.message))
     },
 
-    //Metodo para recoger TODOS los datos meteorologicos por el ID de la estacion.
+    //Metodo para recoger TODOS los datos meteorologicos.
     getById: async (req, res) => {
         try {
             let result = null;
@@ -44,8 +44,16 @@ module.exports = {
             res.send(500, error.message);
         }
     },
+    getDatosByIdEstacion: (req,res) => {
+        const estacion_id = req.params.id;
+        WeatherData.find({estacion : estacion_id})
+            .populate('estacion')
+            .exec()
+            .then(docs => res.status(200).json(docs))
+            .catch(err => res.send(404).json(err.message));
+    },
     //Metodo para recoger todos los datos meteorologicos de una estacion por ID y entre dos fechas.
-    getDatosByIdEstacion: async (req, res) => {
+    getDatosByIdEstacionAndDateFromTo: async (req, res) => {
 
         const from = req.params.from.split('-');
         const to = req.params.to.split('-');
@@ -110,6 +118,30 @@ module.exports = {
         .exec()
         .then(docs => res.status(200).json(docs))
         .catch(err => res.send(500).json(err.message));
+    },
+    getSummaryByEstacion : (req,res) => {
+        var listaWeatherData = [];
+
+        var start = new Date();
+        start.setHours(0,0,0,0);
+        var end = new Date();
+        end.setHours(23,59,59,999);
+        
+        const estacion_id = req.params.id;
+        WeatherData.find({estacion : estacion_id , fecha:{$gte: start, $lt: end}})
+            .populate('estacion')
+            .exec()
+            .then(docs => {
+                var total = 0;
+                _.forEach(docs,wd => {
+                    total += wd.velocidad_viento;
+                    
+                });
+                res.status(200).json({
+                    total : total
+                });
+            })
+            .catch(err => res.send(404).json(err.message));
     }
 
 };
