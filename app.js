@@ -25,14 +25,14 @@ db.once('open', () => {
     console.log('Conectado!');
 });
 
-passport.use(new LocalStrategy((username, password, done) => {    
+passport.use(new LocalStrategy((username, password, done) => {
     let busqueda = (username.includes('@')) ? { email: username } : { username: username };
     User.findOne(busqueda, (err, user) => {
         if (err) return done(null, false);
         if (!bcrypt.compareSync(password, user.password)) {
             return done(null, false);
         }
-        
+
         return done(null, user);
     });
 }));
@@ -43,7 +43,7 @@ opts.secretOrKey = process.env.JWT_SECRET;
 opts.algorithms = [process.env.JWT_ALGORITHM];
 
 passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
-    
+
     User.findById(jwt_payload.sub, (err, user) => {
         if (err) return done(null, false);
         else return done(null, user);
@@ -58,7 +58,7 @@ app.use(cookieParser())
 app.use(passport.initialize())
 
 app.use('/api/users', users)
-app.use('/api/weather',weatherDataRoute)
+app.use('/api/weather', weatherDataRoute)
 app.use('/api/stations', estacionesRoute)
 app.use(middleware.notFoundHandler)
 app.use(middleware.errorHandler)
