@@ -12,6 +12,7 @@ const bcrypt = require('bcryptjs');
 
 const users = require('./routes/users')
 const weatherDataRoute = require('./routes/weatherdata')
+const estacionesRoute = require('./routes/estaciones')
 require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
@@ -54,5 +55,6 @@ app.use(passport.initialize())
 
 app.use('/api/v1/users', users)
 app.use('/api/weather',weatherDataRoute)
+app.use('/api/stations', estacionesRoute)
 
 module.exports = app

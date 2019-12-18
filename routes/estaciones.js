@@ -3,4 +3,6 @@ const router = express.Router()
 const EstacionController = require('../controllers/estaciones')
 
 
-router.post('/api/stations',EstacionController.nuevaEstacion);
+router.post('',EstacionController.nuevaEstacion);
+
+module.exports = router
