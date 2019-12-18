@@ -10,8 +10,8 @@ module.exports = {
         let estaciones = new Estaciones({
             localizacion: req.body.localizacion,
             nombre: req.body.nombre,
-           // usuarioRegistra: req.usuario._id,//Esto es el usuario que esta logueado
-           //usuarioMantiene: req.body.idMantenimiento
+            usuarioRegistra: req.usuario._id,//Esto es el usuario que esta logueado
+            usuarioMantiene: req.body.usuarioMantiene
         });
         estaciones.save()
             .then(resp => resp.populate('usuarioRegistra').execPopulate())
@@ -30,7 +30,7 @@ module.exports = {
 
         }catch{
             res.send(500, err.message);
-        }//Faltaria meterle la autenticacion de alvaro cuando este
+        }
 
     },
     getEstacion: async(req,res) => {
@@ -45,5 +45,27 @@ module.exports = {
         }catch{
             res.send(500, err.message);
         }
-    } //Cuando busco por id
+    },
+    
+    updateEstacion = function(req, res) {
+        estaciones.findById(req.params.id, function(err, estaciones) {
+            estaciones.localizacion   = req.body.localizacion;
+            tvshow.nombre    = req.body.nombre;
+            tvshow.usuarioMantiene = req.body.usuarioMantiene;
+
+            estaciones.save(function(err) {
+                if(err) return res.status(500).send(err.message);
+          res.status(200).jsonp(estaciones);
+            });
+        });
+    },
+
+    deleteEstacion = function(req, res) {
+        estaciones.findById(req.params.id, function(err, estaciones) {
+            estaciones.remove(function(err) {
+                if(err) return res.status(500).send(err.message);
+          res.status(200).send();
+            })
+        });
+    }
 }
