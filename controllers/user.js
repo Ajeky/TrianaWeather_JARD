@@ -18,7 +18,7 @@ let controller = {
                     email: req.body.email,
                     nombre_completo: req.body.nombre_completo,
                     rol: req.body.rol,
-                    fecha_creacion: Date.now,
+                    fecha_creacion: new Date(),
                     password: pass,
                     estaciones_registradas: [],
                     estaciones_mantenidas: []
@@ -34,6 +34,7 @@ let controller = {
 
     login: (req, res, next) => {
         passport.authenticate("local", { session: false }, (error, user) => {
+            
             if (error || !user) next(new error_types.Error404("El usuario o la contraseña son incorrectos"))
             else {
                 const payload = {
@@ -48,6 +49,7 @@ let controller = {
                 });
             }
         })(req, res)
-    )
+    }
 }
-}
+
+module.exports = controller;
