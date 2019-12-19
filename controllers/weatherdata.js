@@ -21,9 +21,12 @@ module.exports = {
         });
 
         weatherData.save()
-            .then(wd => wd.populate('estacion').execPopulate())
-            .then(wd => wd.populate('estacion.usuarioMantiene', ['email', 'username']))
-            .then(wd => wd.populate('estacion.usuarioRegistra', ['email', 'username']))
+            .then(wd => {
+                return wd.populate({
+                    path: 'estacion',
+                    populate: [{ path: 'usuarioRegistra', select: ['username', 'email'] }, { path: 'usuarioMantiene', select: ['username', 'email'] }]
+                }).execPopulate()
+            })
             .then(wd => res.status(201).json(wd))
             .catch(err => res.send(500).json(err.message))
     },
@@ -34,11 +37,7 @@ module.exports = {
         WeatherData.findById(weatherId)
             .populate({
                 path: 'estacion',
-                populate: { path: 'usuarioMantiene' }
-            })
-            .populate({
-                path: 'estacion',
-                populate: [{ path: 'usuarioMantiene' }, { path: 'usuarioRegistra' }]
+                populate: [{ path: 'usuarioRegistra', select: ['username', 'email'] }, { path: 'usuarioMantiene', select: ['username', 'email'] }]
             })
             .exec()
             .then(doc => res.status(200).json(doc))
@@ -47,7 +46,10 @@ module.exports = {
     getDatosByIdEstacion: (req, res) => {
         const estacion_id = req.params.id;
         WeatherData.find({ estacion: estacion_id })
-            .populate('estacion')
+            .populate({
+                path: 'estacion',
+                populate: [{ path: 'usuarioRegistra', select: ['username', 'email'] }, { path: 'usuarioMantiene', select: ['username', 'email'] }]
+            })
             .exec()
             .then(docs => res.status(200).json(docs))
             .catch(err => res.send(404).json(err.message));
@@ -63,13 +65,25 @@ module.exports = {
         dateTo.setHours(23, 59, 59, 999);
 
         WeatherData.find({ estacion: req.params.id, fecha: { $gte: dateFrom, $lte: dateTo } })
+            .populate({
+                path: 'estacion',
+                populate: [{ path: 'usuarioRegistra', select: ['username', 'email'] }, { path: 'usuarioMantiene', select: ['username', 'email'] }]
+            })
+            .exec()
+            .then(docs => res.status(200).json(docs))
+            .catch(err => res.send(404).json(err.message));
     },
     //Método para obtener un WeatherData por su id
     getWeatherData: (req, res, next) => {
         const weatherData_id = req.params.id;
         WeatherData.findById(weatherData_id)
             .exec()
-            .then(doc => doc.populate('estacion').execPopulate())
+            .then(wd => {
+                return wd.populate({
+                    path: 'estacion',
+                    populate: [{ path: 'usuarioRegistra', select: ['username', 'email'] }, { path: 'usuarioMantiene', select: ['username', 'email'] }]
+                }).execPopulate()
+            })
             .then(doc => res.status(200).json(doc))
             .catch(err => res.send(404).json(err.message));
     },
@@ -82,7 +96,10 @@ module.exports = {
         end.setHours(23, 59, 59, 999);
 
         WeatherData.find({ fecha: { $gte: start, $lt: end } })
-            .populate('estacion')
+            .populate({
+                path: 'estacion',
+                populate: [{ path: 'usuarioRegistra', select: ['username', 'email'] }, { path: 'usuarioMantiene', select: ['username', 'email'] }]
+            })
             .exec()
             .then(docs => res.status(200).json(docs))
             .catch(err => res.send(500).json(err.message))
@@ -96,8 +113,11 @@ module.exports = {
         var to = new Date(parseInt(to_split[2]), parseInt(to_split[1]) - 1, parseInt(to_split[0]));
         to.setHours(23, 59, 59, 999);
 
-        WeatherData.find({ fecha: { $gte: from, $lte: to } }, { id: req.params.id })
-            .populate('estacion')
+        WeatherData.find({ fecha: { $gte: from, $lte: to } })
+            .populate({
+                path: 'estacion',
+                populate: [{ path: 'usuarioRegistra', select: ['username', 'email'] }, { path: 'usuarioMantiene', select: ['username', 'email'] }]
+            })
             .exec()
             .then(docs => res.status(200).json(docs))
             .catch(err => res.send(500).json(err.message));

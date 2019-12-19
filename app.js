@@ -45,6 +45,8 @@ opts.algorithms = [process.env.JWT_ALGORITHM];
 passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
 
     User.findById(jwt_payload.sub, (err, user) => {
+        console.log("USUARIO:", user);
+
         if (err) return done(null, false);
         else return done(null, user);
     });

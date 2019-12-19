@@ -74,8 +74,8 @@ let controller = {
 
             result = await User
                 .find()
-                .populate('estaciones_registradas')
-                .populate('estaciones_mantenidas')
+                .populate('estaciones_registradas', 'nombre')
+                .populate('estaciones_mantenidas', 'nombre')
                 .exec();
 
             if (result.length == 0) res.send(204);

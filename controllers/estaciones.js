@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const estaciones = require('../models/estaciones')
+const usuariosController = require('./user')
 
 module.exports = {
 
@@ -72,11 +73,9 @@ module.exports = {
     },
 
     deleteEstacion: function(req, res) {
-        estaciones.findById(req.params.id, function(err, estaciones) {
-            estaciones.remove(function(err) {
-                if (err) return res.status(500).send(err.message);
-                res.status(204, err.message);
-            })
+        estaciones.findByIdAndDelete(req.params.id, function(err, estaciones) {
+            if (err) return res.status(500).send(err.message);
+            res.send(204);
         });
     }
 }

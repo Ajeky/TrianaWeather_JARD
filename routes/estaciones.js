@@ -8,8 +8,8 @@ const middleware = require('../middleware/middleware')
 router.post('/', middleware.ensureManager, EstacionController.nuevaEstacion);
 router.get('/', middleware.ensureManager, EstacionController.getEstaciones);
 router.get('/:id', middleware.ensureManager, EstacionController.getEstacion);
-router.get('/:id/weather/from/:from/to/:to', WeatherDataController.getDatosByIdEstacionAndDateFromTo);
-router.get('/:id/weather', WeatherDataController.getDatosByIdEstacion);
+router.get('/:id/weather/from/:from/to/:to', middleware.ensureAuthenticated, WeatherDataController.getDatosByIdEstacionAndDateFromTo);
+router.get('/:id/weather', middleware.ensureAuthenticated, WeatherDataController.getDatosByIdEstacion);
 //router.post('/', EstacionController.nuevaEstacion);
 router.get('/:id/summary/today', WeatherDataController.getSummaryByEstacion);
 
