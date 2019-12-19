@@ -10,5 +10,5 @@ router.get('/today', WeatherDataController.getWeatherDataToday)
     //router.get('/:id',WeatherDataController.getWeatherData)
 router.get('/from/:from/to/:to', WeatherDataController.getWeatherDataFromTo)
 
-router.get('/:id', middleware.ensureAuthenticated, WeatherDataController.getById);
+router.get('/:id', WeatherDataController.getWeatherById);
 module.exports = router

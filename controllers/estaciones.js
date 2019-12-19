@@ -25,7 +25,10 @@ module.exports = {
         try {
             let resultado = null
 
-            resultado = await estaciones.find().exec();
+            resultado = await estaciones.find()
+                .populate('usuarioRegistra', ['email', 'username'])
+                .populate('usuarioMantiene', ['email', 'username'])
+                .exec();
 
             res.status(200).json(resultado);
 
@@ -39,7 +42,10 @@ module.exports = {
         try {
             let resultado = null
 
-            resultado = await estaciones.findById(req.params.id).exec();
+            resultado = await estaciones.findById(req.params.id)
+                .exec()
+                .then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+                .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate());
 
             res.status(200).json(resultado);
 
@@ -54,10 +60,10 @@ module.exports = {
             estaciones.nombre = req.body.nombre;
             estaciones.usuarioMantiene = req.body.usuarioMantiene;
 
-            estaciones.save(function(err) {
-                if (err) return res.status(500).send(err.message);
-                res.status(200).json(estaciones);
-            });
+            estaciones.save.then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+                .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate())
+                .then(resp => res.status(200).json(resp))
+                .catch(res.status(500).send(err.message));
         });
     },
 
