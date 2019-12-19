@@ -1,21 +1,22 @@
 'use strict'
 
 const _ = require('lodash');
-const Estaciones = require('../models/estaciones')
+const estaciones = require('../models/estaciones')
 
 module.exports = {
 
     nuevaEstacion: (req, res) => {
+        console.log(req.user);
 
-        let estaciones = new Estaciones({
+        let estacion = new estaciones({
             localizacion: req.body.localizacion,
             nombre: req.body.nombre,
-            usuarioRegistra: req.usuario._id, //Esto es el usuario que esta logueado
+            usuarioRegistra: req.user._id, //Esto es el usuario que esta logueado
             usuarioMantiene: req.body.usuarioMantiene
         });
-        estaciones.save()
-            //.then(resp => resp.populate('usuarioRegistra').execPopulate())
-            //.then(resp => resp.populate('usuarioMantiene').execPopulate())
+        estacion.save()
+            .then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+            .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate())
             .then(resp => res.status(201).json(resp))
             .catch(err => res.send(500).json(err.message))
     },
@@ -24,11 +25,14 @@ module.exports = {
         try {
             let resultado = null
 
-            resultado = await estaciones.find().exec();
+            resultado = await estaciones.find()
+                .populate('usuarioRegistra', ['email', 'username'])
+                .populate('usuarioMantiene', ['email', 'username'])
+                .exec();
 
             res.status(200).json(resultado);
 
-        } catch {
+        } catch (err) {
             res.send(500, err.message);
         }
 
@@ -38,33 +42,36 @@ module.exports = {
         try {
             let resultado = null
 
-            resultado = await estaciones.findById(req.param.id).exec();
+            resultado = await estaciones.findById(req.params.id)
+                .exec()
+                .then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+                .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate());
 
             res.status(200).json(resultado);
 
-        } catch {
+        } catch (err) {
             res.send(500, err.message);
         }
     },
 
-    updateEstacion : function(req, res) {
+    updateEstacion: function(req, res) {
         estaciones.findById(req.params.id, function(err, estaciones) {
             estaciones.localizacion = req.body.localizacion;
             estaciones.nombre = req.body.nombre;
             estaciones.usuarioMantiene = req.body.usuarioMantiene;
 
-            estaciones.save(function(err) {
-                if (err) return res.status(500).send(err.message);
-                res.status(200).jsonp(estaciones);
-            });
+            estaciones.save.then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+                .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate())
+                .then(resp => res.status(200).json(resp))
+                .catch(res.status(500).send(err.message));
         });
     },
 
-    deleteEstacion : function(req, res) {
+    deleteEstacion: function(req, res) {
         estaciones.findById(req.params.id, function(err, estaciones) {
             estaciones.remove(function(err) {
                 if (err) return res.status(500).send(err.message);
-                res.status(200).send();
+                res.status(204).send();
             })
         });
     }
