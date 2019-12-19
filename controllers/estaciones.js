@@ -60,10 +60,14 @@ module.exports = {
             estaciones.nombre = req.body.nombre;
             estaciones.usuarioMantiene = req.body.usuarioMantiene;
 
-            estaciones.save.then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
-                .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate())
-                .then(resp => res.status(200).json(resp))
-                .catch(res.status(500).send(err.message));
+            try {
+                estaciones.save()
+                    .then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+                    .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate())
+                    .then(resp => res.status(200).json(resp));
+            } catch (err) {
+                res.send(500).json(err.message)
+            }
         });
     },
 
@@ -71,7 +75,7 @@ module.exports = {
         estaciones.findById(req.params.id, function(err, estaciones) {
             estaciones.remove(function(err) {
                 if (err) return res.status(500).send(err.message);
-                res.status(204).send();
+                res.status(204, err.message);
             })
         });
     }

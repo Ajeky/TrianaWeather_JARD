@@ -26,7 +26,18 @@ let controller = {
 
                 user.save((err, user) => {
                     if (err) next(new error_types.Error400(err.message));
-                    res.status(201).json(user);
+
+                    const payload = {
+                        sub: user.id,
+                        exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
+                        username: user.username
+                    };
+                    const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
+
+                    res.status(201).json({
+                        user: user,
+                        token: token
+                    });
                 });
             }
         });
@@ -44,7 +55,13 @@ let controller = {
                 };
                 const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
                 res.json({
-                    username: user.username,
+                    usuario: {
+                        username: user.username,
+                        email: user.email,
+                        nombre_completo: user.nombre_completo,
+                        rol: user.rol,
+                        fecha_creacion: user.fecha_creacion
+                    },
                     token: token
                 });
             }

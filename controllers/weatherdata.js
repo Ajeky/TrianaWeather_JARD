@@ -22,6 +22,8 @@ module.exports = {
 
         weatherData.save()
             .then(wd => wd.populate('estacion').execPopulate())
+            .then(wd => wd.populate('estacion.usuarioMantiene', ['email', 'username']))
+            .then(wd => wd.populate('estacion.usuarioRegistra', ['email', 'username']))
             .then(wd => res.status(201).json(wd))
             .catch(err => res.send(500).json(err.message))
     },
@@ -30,7 +32,14 @@ module.exports = {
     getWeatherById: async(req, res) => {
         const weatherId = req.params.id;
         WeatherData.findById(weatherId)
-            .populate('estacion')
+            .populate({
+                path: 'estacion',
+                populate: { path: 'usuarioMantiene' }
+            })
+            .populate({
+                path: 'estacion',
+                populate: [{ path: 'usuarioMantiene' }, { path: 'usuarioRegistra' }]
+            })
             .exec()
             .then(doc => res.status(200).json(doc))
             .catch(err => res.send(404).json(err.message));
