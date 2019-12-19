@@ -12,4 +12,7 @@ router.get('/:id/weather', WeatherDataController.getDatosByIdEstacion);
 //router.post('/', EstacionController.nuevaEstacion);
 router.get('/:id/summary/today', WeatherDataController.getSummaryByEstacion);
 
+router.put('/:id', EstacionController.updateEstacion);
+router.delete('/:id', EstacionController.deleteEstacion);
+
 module.exports = router
