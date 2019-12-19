@@ -50,8 +50,8 @@ module.exports = {
     updateEstacion = function(req, res) {
         estaciones.findById(req.params.id, function(err, estaciones) {
             estaciones.localizacion   = req.body.localizacion;
-            tvshow.nombre    = req.body.nombre;
-            tvshow.usuarioMantiene = req.body.usuarioMantiene;
+            estaciones.nombre    = req.body.nombre;
+            estaciones.usuarioMantiene = req.body.usuarioMantiene;
 
             estaciones.save(function(err) {
                 if(err) return res.status(500).send(err.message);
