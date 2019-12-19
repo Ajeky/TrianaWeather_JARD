@@ -28,59 +28,14 @@ module.exports = {
     },
 
     //Metodo para recoger TODOS los datos meteorologicos.
-    getById: async (req, res) => {
-        try {
-            let result = null;
-
-            if (WeatherData.findById(req.params.id) != null && WeatherData.findById(req.params.id) != undefined) {
-                result = await WeatherData.findById(req.params.id)
-                .populate('estacion')
-                .exec();
-                res.status(200).json(result);
-            } else {
-               res.send(404, 'El objeto que buscas no esta en la base de datos.');
-            }
-        } catch (error) {
-            res.send(500, error.message);
-        }
-    },
-    getDatosByIdEstacion: (req,res) => {
-        const estacion_id = req.params.id;
-        WeatherData.find({estacion : estacion_id})
-            .populate('estacion')
-            .exec()
-            .then(docs => res.status(200).json(docs))
-            .catch(err => res.send(404).json(err.message));
-    },
-    //Metodo para recoger todos los datos meteorologicos de una estacion por ID y entre dos fechas.
-    getDatosByIdEstacionAndDateFromTo: async (req, res) => {
-
-        const from = req.params.from.split('-');
-        const to = req.params.to.split('-');
-        var dateFrom = new Date (parseInt(from[2]),parseInt(from[1])-1,parseInt(from[0]));
-        var dateTo = new Date (parseInt(to[2]),parseInt(to[1])-1,parseInt(to[0]));
-
-        dateTo.setHours(23,59,59,999);
-
-        WeatherData.find({estacion: req.params.id, fecha:{$gte:dateFrom, $lte:dateTo }})
+    getWeatherById: async (req, res) => {
+        const weatherId = req.params.id;
+        WeatherData.findById(weatherId)
         .populate('estacion')
         .exec()
-        .then(docs => res.status(200).json(docs))
+        .then(doc => res.status(200).json(doc))
         .catch(err => res.send(404).json(err.message));
-
     },
-/* getWeatherDataToday : (req,res) => {
-    var start = new Date();
-    start.setHours(0,0,0,0);
-
-    var end = new Date();
-    end.setHours(23,59,59,999);s
-
-    WeatherData.find({fecha:{$gte: start, $lt: end}})
-        .exec()
-        .then(docs => res.status(200).json(docs))
-        .catch(err => res.send(500).json(err.message))
-} */
     //Método para obtener un WeatherData por su id
     getWeatherData : (req,res,next) => {
         const weatherData_id = req.params.id;
