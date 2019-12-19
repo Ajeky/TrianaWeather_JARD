@@ -113,7 +113,7 @@ module.exports = {
         var to = new Date(parseInt(to_split[2]),parseInt(to_split[1])-1,parseInt(to_split[0]));
         to.setHours(23,59,59,999);
         
-        WeatherData.find({fecha:{$gte: from, $lte: to}}, {id: req.params.id})
+        WeatherData.find({fecha:{$gte: from, $lte: to}})
         .populate('estacion')
         .exec()
         .then(docs => res.status(200).json(docs))

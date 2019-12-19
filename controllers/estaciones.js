@@ -5,13 +5,13 @@ const Estaciones = require('../models/estaciones')
 
 module.exports = {
 
-    nuevaEstacion : (req,res) => {
+    nuevaEstacion: (req, res) => {
 
         let estaciones = new Estaciones({
             localizacion: req.body.localizacion,
-            nombre: req.body.nombre
-           // usuarioRegistra: req.usuario._id,//Esto es el usuario que esta logueado
-           //usuarioMantiene: req.body.idMantenimiento
+            nombre: req.body.nombre,
+            usuarioRegistra: req.usuario._id, //Esto es el usuario que esta logueado
+            usuarioMantiene: req.body.usuarioMantiene
         });
         estaciones.save()
             //.then(resp => resp.populate('usuarioRegistra').execPopulate())
@@ -19,31 +19,53 @@ module.exports = {
             .then(resp => res.status(201).json(resp))
             .catch(err => res.send(500).json(err.message))
     },
-    getEstaciones: async(req,res) =>{
+    getEstaciones: async(req, res) => {
 
-        try{
+        try {
             let resultado = null
 
             resultado = await estaciones.find().exec();
 
             res.status(200).json(resultado);
 
-        }catch{
+        } catch {
             res.send(500, err.message);
-        }//Faltaria meterle la autenticacion de alvaro cuando este
+        }
 
     },
-    getEstacion: async(req,res) => {
+    getEstacion: async(req, res) => {
 
-        try{
+        try {
             let resultado = null
 
             resultado = await estaciones.findById(req.param.id).exec();
 
             res.status(200).json(resultado);
 
-        }catch{
+        } catch {
             res.send(500, err.message);
         }
-    } //Cuando busco por id
+    },
+
+    updateEstacion : function(req, res) {
+        estaciones.findById(req.params.id, function(err, estaciones) {
+            estaciones.localizacion = req.body.localizacion;
+            estaciones.nombre = req.body.nombre;
+            estaciones.usuarioMantiene = req.body.usuarioMantiene;
+
+            estaciones.save(function(err) {
+                if (err) return res.status(500).send(err.message);
+                res.status(200).jsonp(estaciones);
+            });
+        });
+    },
+
+    deleteEstacion : function(req, res) {
+        estaciones.findById(req.params.id, function(err, estaciones) {
+            estaciones.remove(function(err) {
+                if (err) return res.status(500).send(err.message);
+                res.status(200).send();
+            })
+        });
+    }
 }

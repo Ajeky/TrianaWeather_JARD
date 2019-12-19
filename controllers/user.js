@@ -34,7 +34,7 @@ let controller = {
 
     login: (req, res, next) => {
         passport.authenticate("local", { session: false }, (error, user) => {
-            
+
             if (error || !user) next(new error_types.Error404("El usuario o la contraseña son incorrectos"))
             else {
                 const payload = {
@@ -49,6 +49,24 @@ let controller = {
                 });
             }
         })(req, res)
+    },
+
+    getUsers: async(req, res) => {
+        try {
+            let result = null;
+
+            result = await User
+                .find()
+                .populate('estaciones_registradas')
+                .populate('estaciones_mantenidas')
+                .exec();
+
+            if (result.length == 0) res.send(204);
+
+            else res.status(200).json(result);
+        } catch (err) {
+            res.send(500, err.message);
+        }
     }
 }
 
