@@ -15,8 +15,8 @@ module.exports = {
             usuarioMantiene: req.body.usuarioMantiene
         });
         estacion.save()
-            .then(resp => resp.populate('usuarioRegistra').execPopulate())
-            .then(resp => resp.populate('usuarioMantiene').execPopulate())
+            .then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+            .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate())
             .then(resp => res.status(201).json(resp))
             .catch(err => res.send(500).json(err.message))
     },
