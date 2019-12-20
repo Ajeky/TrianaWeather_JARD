@@ -2,12 +2,12 @@
 
 const _ = require('lodash');
 const estaciones = require('../models/estaciones')
+const User = require('../models/users');
 const usuariosController = require('./user')
 
 module.exports = {
 
-    nuevaEstacion: (req, res) => {
-        console.log(req.user);
+    nuevaEstacion: async (req, res) => {
 
         let estacion = new estaciones({
             localizacion: req.body.localizacion,
@@ -15,11 +15,22 @@ module.exports = {
             usuarioRegistra: req.user._id, //Esto es el usuario que esta logueado
             usuarioMantiene: req.body.usuarioMantiene
         });
-        estacion.save()
-            .then(resp => resp.populate('usuarioRegistra', ['email', 'username']).execPopulate())
+        
+        var id_estacion;
+        var id_usuario_mantiene;
+        await estacion.save()
+            .then(resp => {
+                id_estacion = resp._id;
+                id_usuario_mantiene = resp.usuarioMantiene;
+                return resp.populate('usuarioRegistra', ['email', 'username']).execPopulate()
+            })
             .then(resp => resp.populate('usuarioMantiene', ['email', 'username']).execPopulate())
             .then(resp => res.status(201).json(resp))
             .catch(err => res.send(500).json(err.message))
+
+        await User.findByIdAndUpdate(id_usuario_mantiene, {$push: {estaciones_mantenidas: id_estacion}});
+        await User.findByIdAndUpdate(req.user._id, {$push: {estaciones_registradas: id_estacion}});
+
     },
     getEstaciones: async(req, res) => {
 

@@ -98,18 +98,6 @@ module.exports = {
         .catch(err => res.send(404).json(err.message));
 
     },
-/* getWeatherDataToday : (req,res) => {
-    var start = new Date();
-    start.setHours(0,0,0,0);
-
-    var end = new Date();
-    end.setHours(23,59,59,999);s
-
-    WeatherData.find({fecha:{$gte: start, $lt: end}})
-        .exec()
-        .then(docs => res.status(200).json(docs))
-        .catch(err => res.send(500).json(err.message))
-} */
     //Método para obtener un WeatherData por su id
     getWeatherData: (req, res, next) => {
         const weatherData_id = req.params.id;
