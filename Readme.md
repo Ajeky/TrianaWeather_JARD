@@ -6,9 +6,11 @@ Primero hemos de importar los datos adjuntados en formato JSON a nuestra base de
 Una vez hecho esto, podemos logearnos con cualquiera de los usuarios especificados a continuación e ir probando los endpoints.  
 Fin, fácil rápido y sencillo.
 
-## **Usuarios y contraseñas**
+## **Usuarios y contraseñas**  
+(La aplicación crashea si nos equivocamos con el logIn, ojo)
+
 **Rol usuario:**  
-username: user  
+username: usuario  
 contraseña: 1234
 
 **Rol manager:**  
