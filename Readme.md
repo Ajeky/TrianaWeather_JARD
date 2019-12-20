@@ -2,7 +2,9 @@
 _Esta aplicación esta diseñada para monitorizar algunos parámetros como temperatura, humedad, calidad del aire..._
 
 ## **Como probar nuestra API REST** ##
-_A continuación se muestran algunos ejemplos para probar la API REST de forma sencilla, organizados por **ENDPOINTS**._
+Primero hemos de importar los datos adjuntados en formato JSON a nuestra base de datos mongoDB.  
+Una vez hecho esto, podemos logearnos con cualquiera de los usuarios especificados a continuación e ir probando los endpoints.  
+Fin, fácil rápido y sencillo.
 
 ## **Usuarios y contraseñas**
 **Rol usuario:**  
@@ -24,7 +26,7 @@ Primero necesitaremos nuestro Json para tener datos de prueba en nuestra base de
 
 ### Colección "**users**"
 
-```json
+```
 {
     "_id": ObjectId("111111111111111111111111"),
     "rol": "USER",
@@ -63,7 +65,7 @@ Primero necesitaremos nuestro Json para tener datos de prueba en nuestra base de
 ``` 
 
 ### Colección "estaciones"
-```json
+```
 {
     "_id": ObjectId("111111111111111111111111"),
     "localizacion": "37.377599, -6.002588",
@@ -106,7 +108,7 @@ Primero necesitaremos nuestro Json para tener datos de prueba en nuestra base de
 ```
 
 ### Colección "weatherdatas"
-```json
+```
 {
     "_id": ObjectId("111111111111111111111111"),
 	"lluvia" : 0,
@@ -445,7 +447,8 @@ Body (ejemplo):
 	"rol": "ADMIN",
 	"password": "QueVivaNuevaGuinea"
 }
-```
+```  
+
 2. Petición para loguear un usuario (POST) (Sin autentificar): ``` localhost:3000/api/users/login ```  
 Body (ejemplo):  
 ```json
@@ -453,28 +456,38 @@ Body (ejemplo):
 	"username": "admin",
 	"password": "admin"
 }
-```
+```  
+
 3. Petición obtener todos los usuarios (GET) (Rol admin): ``` localhost:3000/api/users/ ```
 
 ## Gestion de estaciones meteorologicas 🛰️
-1. Petición obtener todas las estaciones (GET) (Rol manager): ``` localhost:3000/api/stations/ ```
+1. Petición obtener todas las estaciones (GET) (Rol manager): ``` localhost:3000/api/stations/ ```  
+
 2. Petición para obtener los datos de una estación (GET) (Rol manager): ``` localhost:3000/api/stations/:id ```  
-ID de ejemplo: ```111111111111111111111111```
-3. Crear una nueva estación (POST) (Rol manager): ``` localhost:3000/api/stations ```
+ID de ejemplo: ```111111111111111111111111```  
+
+3. Crear una nueva estación (POST) (Rol manager): ``` localhost:3000/api/stations ```  
+
 4. Petición para modificar los datos de una estación (PUT) (Rol manager): ``` localhost:3000/api/stations/:id ```  
-ID de ejemplo: ```111111111111111111111111```
+ID de ejemplo: ```111111111111111111111111```  
+
 5. Petición eliminar los datos de una estación (DELETE) (Rol manager): ``` localhost:3000/api/stations/:id ```
 
 ## Gestion de datos meteorologicos 🌡️
-1. Registra una nueva entrada de datos meteorológicos de una estación (POST) (Rol manager): ``` localhost:3000/api/weather ```
+1. Registra una nueva entrada de datos meteorológicos de una estación (POST) (Rol manager): ``` localhost:3000/api/weather ```  
+
 2. Petición para obtener los datos meteorológicos en base a su ID (GET) (Cualquier rol): ``` localhost:3000/api/weather/:id ```  
-ID de ejemplo: ```111111111111111111111111```
+ID de ejemplo: ```111111111111111111111111```  
+
 3. Petición para obtener los datos meteorológicos de una estación (GET) (Cualquier rol): ``` localhost:3000/api/stations/:id/weather ```  
-ID de ejemplo: ```111111111111111111111111```
-4. Petición para obtener todos los datos meteorológicos de todas las estaciones para el día de hoy (GET) (Cualquier rol): ``` localhost:3000/api/weather/today ```
+ID de ejemplo: ```111111111111111111111111```  
+
+4. Petición para obtener todos los datos meteorológicos de todas las estaciones para el día de hoy (GET) (Cualquier rol): ``` localhost:3000/api/weather/today ```  
+
 5. Petición para obtener los datos meteorológicos de una estación para un rango de fechas (GET) (Cualquier rol): ``` localhost:3000/api/stations/:id/weather/from/:from/to/:to ```  
 ID de ejemplo: ```111111111111111111111111```  
-Formato :from y :to: DD-MM-YYYY (15-04-1998)
+Formato :from y :to: DD-MM-YYYY (15-04-1998)  
+
 6. Petición para obtener todos los datos meteorológicos de todas las estaciones para un rango de fechas: ``` localhost:3000/api/weather/from/:from/to/:to ```  
 Formato :from y :to: DD-MM-YYYY (15-04-1998)
 
